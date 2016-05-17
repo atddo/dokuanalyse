@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.spatial.distance
 from features import BagOfWords , IdentityFeatureTransform
+from scipy.spatial.distance import cdist
 
 
 
@@ -36,9 +37,11 @@ class KNNClassifier(object):
             
             mit d Trainingsbeispielen und t dimensionalen Merkmalsvektoren.
         """
+        
         self.__train_samples = train_samples
         self.__train_labels = train_labels
-
+        
+        
     def classify(self, test_samples):
         """Klassifiziert Test Daten.
         
@@ -52,9 +55,14 @@ class KNNClassifier(object):
         """
         if self.__train_samples is None or self.__train_labels is None:
             raise ValueError('Classifier has not been "estimated", yet!')
-
-        raise NotImplementedError('Implement me')
-
+        train_samples =self.__train_samples
+        train_labels = self.__train_labels
+        test_samples = test_samples 
+        k = self.__k_neighbors
+        metrik = self.__metric
+        distanz = cdist(train_samples,test_samples,metrik)
+        
+        
 
 
 class BayesClassifier(object):

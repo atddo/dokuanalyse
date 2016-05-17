@@ -4,8 +4,8 @@ from corpus import CorpusLoader
 from features import BagOfWords, WordListNormalizer
 from visualization import hbar_plot
 import itertools
-
 from collections import defaultdict
+from classification import KNNClassifier
 
 def aufgabe2():
 
@@ -163,7 +163,6 @@ def aufgabe2():
         print cat
     a = BagOfWords(brown.words())
     
-    a.category_bow_dict(bow_list)
     print "Merkmalsvektoren erstellt"
     
     # Um einen Klassifikator statistisch zu evaluieren, benoetigt man eine Trainingsstichprobe
@@ -208,7 +207,8 @@ def aufgabe2():
     test_list = []
     for cat in brown_categories:
         print cat
-        n = len(brown.fileids(categories=cat))*0.8
+        m = len(brown.fileids(categories=cat))*0.8
+        n=int(m) 
         traindoc_category = brown.fileids(categories=cat)[:n] #[doc for doc in brown.fileids(categories=cat) if len(wordlist_category) <= n]
         train_list.append(traindoc_category)
 
@@ -218,7 +218,9 @@ def aufgabe2():
     train_samples = np.array(train_list)
     test_samples = np.array(test_list)
     print "Arrays sind generiert"
-    train_labels, test_labels = np.array(brown_categories).reshape(len(brown_categories), 1)
+    
+    train_labels = np.array(brown_categories).reshape(len(brown_categories), 1)
+    test_labels =np.array(brown_categories).reshape(len(brown_categories), 1)
     print "Reshaped"
     
     # Klassifizieren Sie nun alle Dokumente der Teststichprobe nach dem Prinzip des k-naechste-
@@ -236,6 +238,7 @@ def aufgabe2():
     
     classification = KNNClassifier(1, 'euclidean')
     classification.estimate(train_samples, train_labels)
+    
     
     # Nachdem Sie mit dem KNNClassifier fuer jedes Testbeispiel ein Klassenlabel geschaetzt haben,
     # koennen Sie dieses mit dem tatsaechlichen Klassenlabel vergleichen. Dieses koennen Sie wie
