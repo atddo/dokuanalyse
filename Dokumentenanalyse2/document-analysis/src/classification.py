@@ -2,6 +2,8 @@ import numpy as np
 import scipy.spatial.distance
 from features import BagOfWords , IdentityFeatureTransform
 from scipy.spatial.distance import cdist
+from _collections import defaultdict
+from operator import itemgetter
 
 
 
@@ -57,10 +59,29 @@ class KNNClassifier(object):
             raise ValueError('Classifier has not been "estimated", yet!')
         train_samples =self.__train_samples
         train_labels = self.__train_labels
-        test_samples = test_samples 
+        test_samples = self.__test_samples 
         k = self.__k_neighbors
         metrik = self.__metric
-        distanz = cdist(train_samples,test_samples,metrik)
+        distanz = cdist(test_samples, train_samples, metrik)
+        sortiert = np.argsort(distanz, axis = 1)[:,:k]
+        train_labels = train_labels.reshape(-1)
+        print sortiert
+        knachbarn = train_labels[distanz]
+        
+        #knachbarnlist= np.array([train_labels[np.argpartition(a, k)[:k]].flatten()] for a in distanz)
+        
+        returnlist = []
+        for i in knachbarn:
+            d = defaultdict(lambda: 1)
+            for j in i:
+               d[j] =+1
+            sortedList=sorted(d, key=itemgetter(1), reverse=True) 
+            returnlist.append(sortedList[:1])
+            
+        print returnlist
+        return returnlist
+            
+        
         
         
 

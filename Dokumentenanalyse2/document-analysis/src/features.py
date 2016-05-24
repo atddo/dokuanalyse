@@ -186,6 +186,7 @@ class BagOfWords(object):
         d = defaultdict(int)
         for k in word_list:
             d[k] += 1
+            
 
         sortedList = sorted(d.items(), key=itemgetter(1), reverse = True) #cmp=lambda x,y: cmp(x[1], y.[1])
 
