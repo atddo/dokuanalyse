@@ -238,6 +238,7 @@ def aufgabe2():
     
     classification = KNNClassifier(1, 'euclidean')
     classification.estimate(train_samples, train_labels)
+    classification.classify(test_samples)
     
     
     # Nachdem Sie mit dem KNNClassifier fuer jedes Testbeispiel ein Klassenlabel geschaetzt haben,
