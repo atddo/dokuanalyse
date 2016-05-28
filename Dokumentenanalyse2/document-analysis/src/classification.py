@@ -59,27 +59,36 @@ class KNNClassifier(object):
             raise ValueError('Classifier has not been "estimated", yet!')
         train_samples =self.__train_samples
         train_labels = self.__train_labels
-        #test_samples = self.__test_samples 
+        
         k = self.__k_neighbors
         metrik = self.__metric
+        print "train_labels"
+        print train_labels
         distanz = cdist(test_samples, train_samples, metrik)
+        print "Distanz:"
+        print distanz
+
         sortiert = np.argsort(distanz, axis = 1)[:,:k]
-        train_labels = train_labels.reshape(-1)
+        print "Sortirert"
         print sortiert
-        knachbarn = train_labels[distanz]
         
-        #knachbarnlist= np.array([train_labels[np.argpartition(a, k)[:k]].flatten()] for a in distanz)
+        copy_train_labels = train_labels.ravel()
+        test_labels = copy_train_labels[sortiert]
+        print"test_labels"
+        print test_labels
+        list_test_labels = test_labels.tolist()
+        print"list_test_labels"
+        print list_test_labels
+        list_copy_train_labels = copy_train_labels.tolist()
+        print "list_copy_train_labels"
+        print list_copy_train_labels
+        Bag = BagOfWords(list_copy_train_labels)
+        listreturn = []
+        for i in list_test_labels:
+            listreturn.append(Bag.most_freq_words(i,1))
         
-         returnlist = []
-#         for i in knachbarn:
-#             d = defaultdict(lambda: 1)
-#             for j in i:
-#                d[j] =+1
-#             sortedList=sorted(d, key=itemgetter(1), reverse=True) 
-#             returnlist.append(sortedList[:1])
-#             
-#         print returnlist
-         return returnlist
+        print np.asarray(listreturn)
+        return np.asarray(listreturn)
             
         
         

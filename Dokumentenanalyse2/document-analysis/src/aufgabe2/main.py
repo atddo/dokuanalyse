@@ -3,6 +3,7 @@ import numpy as np
 from corpus import CorpusLoader
 from features import BagOfWords, WordListNormalizer
 from visualization import hbar_plot
+from evaluation import CrossValidation
 import itertools
 from collections import defaultdict
 from classification import KNNClassifier
@@ -137,9 +138,9 @@ def aufgabe2():
     # Berechnen Sie dazu die 500 haeufigsten Woerter (nach stemming und Filterung von
     # stopwords und Satzzeichen)
     
-    #normalized_words = WordListNormalizer().normalize_words(brown.words())
+    normalized_words = WordListNormalizer().normalize_words(brown.words())
     
-    #print BagOfWords.most_freq_words(normalized_words, 500)
+    vocab =  BagOfWords.most_freq_words(normalized_words, 500)
     
     
     # Berechnen Sie Bag-of-Words Repraesentationen fuer jedes Dokument des Brown Corpus.
@@ -160,8 +161,7 @@ def aufgabe2():
     bow_list = {}
     for cat in brown_categories:
         bow_list[cat] = [WordListNormalizer().normalize_words(brown.words(fileids=doc))[1] for doc in brown.fileids(categories=cat)]
-        print cat
-    a = BagOfWords(brown.words())
+    a = BagOfWords(vocab)
     
     print "Merkmalsvektoren erstellt"
     
@@ -203,26 +203,41 @@ def aufgabe2():
     # funktioniert. Wenn Sie moechten, koennen die Klasse zur Aufteilung der Daten
     # verwenden.
     
-    train_list = []
-    test_list = []
-    for cat in brown_categories:
-        print cat
-        m = len(brown.fileids(categories=cat))*0.8
-        n=int(m) 
-        traindoc_category = brown.fileids(categories=cat)[:n] #[doc for doc in brown.fileids(categories=cat) if len(wordlist_category) <= n]
-        train_list.append(traindoc_category)
-
-        testdoc_category = brown.fileids(categories=cat)[n:] #[doc for doc in brown.fileids(categories=cat) if doc is not in triandoc_category]
-        test_list.append(testdoc_category)
-
-    train_samples = np.array(train_list)
-    test_samples = np.array(test_list)
+#     train_list = []
+#     test_list = []
+#     frequency_test = a.category_bow_dict(bow_list)
+#     print frequency_test
+#     for cat in brown_categories:
+#         print cat
+#         m = len(brown.fileids(categories=cat))*0.8
+#         n=int(m) 
+#         traindoc_category = brown.fileids(categories=cat)[:n] #[doc for doc in brown.fileids(categories=cat) if len(wordlist_category) <= n]
+#         train_list.append(traindoc_category)
+#  
+#         testdoc_category = brown.fileids(categories=cat)[n:] #[doc for doc in brown.fileids(categories=cat) if doc is not in triandoc_category]
+#         
+#         test_list.append(testdoc_category)
+#         
+#          
+#  
+#     train_samples = np.array(train_list)
+#     test_samples = np.array(test_list)
+    #print test_samples
     print "Arrays sind generiert"
-    
+     
     train_labels = np.array(brown_categories).reshape(len(brown_categories), 1)
     test_labels =np.array(brown_categories).reshape(len(brown_categories), 1)
     print "Reshaped"
     
+    cv = CrossValidation(a.category_bow_dict(bow_list), 5)
+    cv2 = cv.corpus_fold(1)
+    train_samples = cv2[0]
+    test_samples = cv2[2]
+    train_labels = cv2[1]
+    test_labels = cv2[3]
+    
+    
+
     # Klassifizieren Sie nun alle Dokumente der Teststichprobe nach dem Prinzip des k-naechste-
     # Nachbarn Klassifikators. Dabei wird die Distanz zwischen dem Merkmalsvektors eines
     # Testbeispiels und allen Merkmalsvektoren aus der Trainingstichprobe berechnet. Das 
@@ -238,7 +253,7 @@ def aufgabe2():
     
     classification = KNNClassifier(1, 'euclidean')
     classification.estimate(train_samples, train_labels)
-    classification.classify(test_samples)
+    result_knnk = classification.classify(test_samples)
     
     
     # Nachdem Sie mit dem KNNClassifier fuer jedes Testbeispiel ein Klassenlabel geschaetzt haben,

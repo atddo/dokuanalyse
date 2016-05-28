@@ -59,13 +59,16 @@ def aufgabe3():
     #
     # Hinweise: 
     #
-    # Die Klasse CrossValidator verwendet die Klasse ClassificationEvaluator, die Sie schon
+    # Die Klasse CrossValidator verwendet die Klasse , die Sie schon
     # fuer aufgabe2 implementieren sollten. Kontrollieren Sie Ihre Umsetzung im Sinne der
     # Verwendung im CrossValidator.
     #
     # Fuer das Verstaendnis der Implementierung der Klasse CrossValidator ist der Eclipse-
     # Debugger sehr hilfreich.
-
+    
+    
+    
+    
     raise NotImplementedError('Implement me')
 
     # Bag-of-Words Weighting 
