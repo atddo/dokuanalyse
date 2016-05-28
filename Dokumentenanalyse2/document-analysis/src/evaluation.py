@@ -128,7 +128,8 @@ class ClassificationEvaluator(object):
         # durch den Klassifikator bestimmten Labels und der tatsaechlichen 
         # Labels
         
-        raise NotImplementedError('Implement me')
+        self.__result_labels = self.__estimated_labels == self.__groundtruth_labels
+        #raise NotImplementedError('Implement me')
         
 
     def error_rate(self, mask=None):
@@ -144,8 +145,22 @@ class ClassificationEvaluator(object):
             n_wrong: Anzahl falsch klassifizierter Testbeispiele
             n_samples: Gesamtzahl von Testbeispielen
         """
-        raise NotImplementedError('Implement me')
+#        raise NotImplementedError('Implement me')
+
+        if mask is None:
+            result_masked = self.__result_labels
+        else:
+            result_masked =  self.__result_labels[mask]
+            
+        sum_true = np.sum(result_masked)
+        n_samples = result_masked.shape[0]
         
+        n_wrong = n_samples - sum_true
+        error_rate = float(n_wrong) / n_samples
+        error_rate = error_rate*100
+        
+        
+        return error_rate, n_wrong, n_samples
 
     def category_error_rates(self):
         """Berechnet klassenspezifische Fehlerraten
@@ -157,7 +172,18 @@ class ClassificationEvaluator(object):
             n_wrong: Anzahl falsch klassifizierter Testbeispiele
             n_samples: Gesamtzahl von Testbeispielen
         """
-        raise NotImplementedError('Implement me')
-
+        #raise NotImplementedError('Implement me')
+        categories = np.unique(self.__groundtruth_labels)
+        cat_results_list = []
+        for category in categories:
+            catmask = self.__groundtruth_labels == category
+            error_rate_category = self.error_rate(catmask)
+            result_tuple = tuple(category) + error_rate_category
+            cat_results_list.append(result_tuple)
+            
+        return cat_results_list
+            
+            
+        
 
 
