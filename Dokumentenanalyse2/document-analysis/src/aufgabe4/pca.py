@@ -22,29 +22,27 @@ class PCAExample(object):
         
         # Implementieren Sie die Dimensionsreduktion
         if target_dim != samples.shape[1]:
-            mean_eigwerte_eigvektoren = self.__estimate_subspace(samples)
-            durchschnitt = mean_eigwerte_eigvektoren[0]
-            index_eigenwerte = np.argsort(mean_eigwerte_eigvektoren[1])
+            index_eigenwerte = np.argsort(self.__sub_var)
             groesste_eigenwerte = index_eigenwerte[len(index_eigenwerte)-target_dim:]
-            eigenvektoren = np.transpose(mean_eigwerte_eigvektoren[2])[groesste_eigenwerte,:]
+            eigenvektoren = np.transpose(self.__sub_vs)[groesste_eigenwerte,:]
             
             print "eigenwerte"
-            print mean_eigwerte_eigvektoren[1]
+            print self.__sub_var
             print "index der n-groessten"
             print groesste_eigenwerte
             print "eigenvektoren"
-            print np.transpose(mean_eigwerte_eigvektoren[2])
+            print np.transpose(self.__sub_vs)
             print "eigenvektoren mit groessten eigenwerten"
             print eigenvektoren
             
             print "_________________________________"
             print samples
             print "reduced"
-            neue_koeffizienzmatrix = samples
-            print neue_koeffizienzmatrix
+            samples = samples * eigenvektoren[0] * eigenvektoren[1] * np.array([1,1,0])
+            print samples
             
             
-            #die nicht benutzte dimension von samples (siehe groesste eigenwerte für indizes) "wegschneiden".
+            #die nicht benutzte dimension von samples (siehe groesste eigenwerte fuer indizes) "wegschneiden".
             #dann mit eigenvektoren multiplizieren (auf neues koordinatensystem ploten.
             
     def __estimate_subspace(self, samples):
