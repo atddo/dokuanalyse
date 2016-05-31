@@ -62,32 +62,23 @@ class KNNClassifier(object):
         
         k = self.__k_neighbors
         metrik = self.__metric
-        print "train_labels"
-        print train_labels
+
         distanz = cdist(test_samples, train_samples, metrik)
-        print "Distanz:"
-        print distanz
 
         sortiert = np.argsort(distanz, axis = 1)[:,:k]
-        print "Sortirert"
-        print sortiert
         
         copy_train_labels = train_labels.ravel()
         test_labels = copy_train_labels[sortiert]
-        print"test_labels"
-        print test_labels
+
         list_test_labels = test_labels.tolist()
-        print"list_test_labels"
-        print list_test_labels
+
         list_copy_train_labels = copy_train_labels.tolist()
-        print "list_copy_train_labels"
-        print list_copy_train_labels
+
         Bag = BagOfWords(list_copy_train_labels)
         listreturn = []
         for i in list_test_labels:
             listreturn.append(Bag.most_freq_words(i,1))
         
-        print np.asarray(listreturn)
         return np.asarray(listreturn)
             
         
