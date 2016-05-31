@@ -150,14 +150,14 @@ def aufgabe3():
     # dem die Bag-of-Words Histogramme gebildet werden. Ein Bag-of-Words Histogramm
     # wird daher auch als Term-Vektor bezeichnet.
 
-    normalized_words = WordListNormalizer().normalize_words(brown.words())[1]
-    vocab = BagOfWords.most_freq_words(normalized_words, 20)
-    bag = BagOfWords(vocab)
+    #normalized_words = WordListNormalizer().normalize_words(brown.words())[1]
+    #vocab = BagOfWords.most_freq_words(normalized_words, 20)
+    #word_bag = BagOfWords(vocab)
 
     word_dic_category = {}
     for cat in brown.categories():
         word_dic_category[cat] = [WordListNormalizer().normalize_words(brown.words(fileids = doc))[1] for doc in brown.fileids(categories=cat)]
-    category_word_dic = bag.category_bow_dict(word_dic_category)
+    category_word_dic = word_bag.category_bow_dict(word_dic_category)
 
     category_weighted = {}
     for key in category_word_dic:
