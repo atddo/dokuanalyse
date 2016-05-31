@@ -221,7 +221,7 @@ def aufgabe3():
     print "Testfunktion"
     
     vocab_size = 2000
-    distance_function="cityblock"
+    distance_function="euclidean"
     knn=6
     print "vocabsize:"  + vocab_size +"; distance" + distance_function +"; knn" + knn
     vocabulary = BagOfWords.most_freq_words(normalized_words, vocab_size)
