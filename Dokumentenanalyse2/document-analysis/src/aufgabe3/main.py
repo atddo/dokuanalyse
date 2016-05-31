@@ -69,7 +69,9 @@ def aufgabe3():
     #
     # Fuer das Verstaendnis der Implementierung der Klasse CrossValidator ist der Eclipse-
     # Debugger sehr hilfreich.
+    
 
+        
     normalized_words = WordListNormalizer().normalize_words(brown.words())[1]
     vocabulary = BagOfWords.most_freq_words(normalized_words, 500)
     word_bag = BagOfWords(vocabulary)
@@ -193,7 +195,7 @@ def aufgabe3():
     # sich dazu die Verteilungen der Anzahl Woerter und Dokumente je Kategorie aus aufgabe1
     # an. In wie weit ist eine Interpretation moeglich?
 
-    raise NotImplementedError('Implement me')
+#    raise NotImplementedError('Implement me')
 
 
     # Evaluieren Sie die beste Klassifikationsleistung
@@ -207,16 +209,74 @@ def aufgabe3():
     # Erlaeutern Sie warum eine solche Parameterkonfiguration lokal optimal ist.
     #
     # Testen Sie mindestens die angegebenen Werte fuer die folgenden Parameter:
-    # 1. Groesse des Vokabulars typischer Woerter (100, 500, 1000, 2000)
-    # 2. Gewichtung der Bag-of-Words Histogramme (absolute, relative, relative with inverse document frequency)
-    # 3. Distanzfunktion fuer die Bestimmung der naechsten Nachbarn (Cityblock, Euclidean, Cosine)
-    # 4. Anzahl der betrachteten naechsten Nachbarn (1, 2, 3, 4, 5, 6)
+    # 1. Groesse des Vokabulars typischer Woerter (100, 500, 1000, 2000!)
+    # 2. Gewichtung der Bag-of-Words Histogramme (absolute, relative!, relative with inverse document frequency)
+    # 3. Distanzfunktion fuer die Bestimmung der naechsten Nachbarn (Cityblock!, Euclidean, Cosine)
+    # 4. Anzahl der betrachteten naechsten Nachbarn (1, 2, 3, 4, 5, 6!)
     #
     # Erklaeren Sie den Effekt aller Parameter.
     #
     # Erklaeren Sie den Effekt zwischen Gewichtungsschema und Distanzfunktion.
+    print "+++++++++++++++++++++++++++++++++++++++++++++++"
+    print "Testfunktion"
+    
+    vocab_size = 2000
+    distance_function="cityblock"
+    knn=6
+    print "vocabsize:"  + vocab_size +"; distance" + distance_function +"; knn" + knn
+    vocabulary = BagOfWords.most_freq_words(normalized_words, vocab_size)
+    word_bag = BagOfWords(vocabulary)
 
-    raise NotImplementedError('Implement me')
+    bow_mat = {}
+    for cat in brown.categories():
+        bow_mat[cat] = [WordListNormalizer().normalize_words(brown.words(fileids=doc))[1] for doc in brown.fileids(categories=cat)]
+    category_dic = word_bag.category_bow_dict(bow_mat)
+    relative_category_dict = RelativeTermFrequencies.weighting(bow_mat)
+    cross_validator = CrossValidation(relative_category_dict, 5)
+
+    first_fold = cross_validator.corpus_fold(0)
+    second_fold = cross_validator.corpus_fold(1)
+    third_fold = cross_validator.corpus_fold(2)
+    fourth_fold = cross_validator.corpus_fold(3)
+    fifth_fold = cross_validator.corpus_fold(4)
+
+    classificator = KNNClassifier(knn, distance_function)
+
+    classificator.estimate(first_fold[0], first_fold[1])
+    result_first_fold = classificator.classify(first_fold[2])
+
+    classificator.estimate(second_fold[0], second_fold[1])
+    result_second_fold = classificator.classify(second_fold[2])
+
+    classificator.estimate(third_fold[0], third_fold[1])
+    result_third_fold = classificator.classify(third_fold[2])
+
+    classificator.estimate(fourth_fold[0], fourth_fold[1])
+    result_fourth_fold = classificator.classify(fourth_fold[2])
+
+    classificator.estimate(fifth_fold[0], fifth_fold[1])
+    result_fifth_fold = classificator.classify(fifth_fold[2])
+
+    eval_first_fold = ClassificationEvaluator(result_first_fold, first_fold[3])
+    eval_second_fold = ClassificationEvaluator(result_second_fold, second_fold[3])
+    eval_third_fold = ClassificationEvaluator(result_third_fold, third_fold[3])
+    eval_fourth_fold = ClassificationEvaluator(result_fourth_fold, fourth_fold[3])
+    eval_fifth_fold = ClassificationEvaluator(result_fifth_fold, fifth_fold[3])
+
+    list_eval_folds =[]
+    list_eval_folds.append(eval_first_fold.error_rate()[0])
+    list_eval_folds.append(eval_second_fold.error_rate()[0])
+    list_eval_folds.append(eval_third_fold.error_rate()[0])
+    list_eval_folds.append(eval_fourth_fold.error_rate()[0])
+    list_eval_folds.append(eval_fifth_fold.error_rate()[0])
+    np_array_eval_folds = np.array(list_eval_folds)
+    print np_array_eval_folds
+    mittelwert = np.mean(np_array_eval_folds)
+    print "Mittelwert"
+    print mittelwert
+    print "++++++++++++"
+    print "Minimum"
+    print np.min(np_array_eval_folds, axis=0)
 
 
 if __name__ == '__main__':

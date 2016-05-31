@@ -84,8 +84,38 @@ class RelativeInverseDocumentWordFrequecies(object):
                 Siehe Beschreibung des Parameters cat_word_dict in der Methode
                 BagOfWords.category_bow_dict.
         """
-        raise NotImplementedError('Implement me')
+        cat_bow_dic = BagOfWords(vocabulary).category_bow_dict(category_wordlists_dict)
 
+        all_documents = 0
+        for key in category_wordlists_dict:
+            all_documents = all_documents + len(category_wordlists_dict[key])
+
+        terms_per_document = []
+        terms_per_category = []
+        cat_bow_dic_copy = cat_bow_dic
+        for key in cat_bow_dic_copy:
+            for line in cat_bow_dic_copy:
+                for term in line:
+                    if term > 0:
+                        term = 1
+            terms_per_category = np.sum(cat_bow_dic_copy[key], axis=0)
+            terms_per_document.append(terms_per_category)
+        terms_per_document = np.sum(terms_per_document, axis=0)
+
+        print terms_per_category
+
+        relative_inverse_dic = {}
+        for key in cat_bow_dic:
+            inverse_dic_mat = []
+            for line in cat_bow_dic[key]:
+                term_per_all_documents = all_documents / terms_per_document
+                
+                print line / line.shape[0]
+                relative_inverse_line = line / line.shape[0] * np.log(all_documents / terms_per_document)
+                inverse_dic_mat.append(relative_inverse_line)
+            relative_inverse_dic[key] = inverse_dic_mat
+
+        return relative_inverse_dic
 
     def weighting(self, bow_mat):
         """Fuehrt die Gewichtung einer Bag-of-Words Matrix durch.
