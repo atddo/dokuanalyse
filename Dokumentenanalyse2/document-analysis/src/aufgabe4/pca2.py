@@ -44,6 +44,7 @@ class PCAExample(object):
             # and return the re-scaled data, eigenvalues, and eigenvectors
             sample = np.dot(evecs.T, samples.T).T
             
+    
             
     def __estimate_subspace(self, samples):
         """Statistische Berechnung des Unterraums.
