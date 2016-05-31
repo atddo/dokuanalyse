@@ -138,9 +138,9 @@ def aufgabe2():
     # Berechnen Sie dazu die 500 haeufigsten Woerter (nach stemming und Filterung von
     # stopwords und Satzzeichen)
 
-    normalized_words = WordListNormalizer().normalize_words(brown.words())
-
-    vocab =  BagOfWords.most_freq_words(normalized_words, 500)
+    normalized_words = WordListNormalizer().normalize_words(brown.words())[1]
+    vocab = BagOfWords.most_freq_words(normalized_words, 500)
+    
 
 
     # Berechnen Sie Bag-of-Words Repraesentationen fuer jedes Dokument des Brown Corpus.
