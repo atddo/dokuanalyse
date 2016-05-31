@@ -272,7 +272,6 @@ def aufgabe3():
     list_eval_folds.append(eval_fourth_fold.error_rate()[0])
     list_eval_folds.append(eval_fifth_fold.error_rate()[0])
     np_array_eval_folds = np.array(list_eval_folds)
-    
     print np_array_eval_folds
     mittelwert = np.mean(np_array_eval_folds)
     print "Mittelwert"
