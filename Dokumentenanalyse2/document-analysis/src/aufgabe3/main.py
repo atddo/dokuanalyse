@@ -223,7 +223,7 @@ def aufgabe3():
     vocab_size = 2000
     distance_function="cityblock"
     knn=6
-    print "vocabsize:"  + vocab_size +"; distance" + distance_function +"; knn" + knn
+    #print "vocabsize:"  + vocab_size +"; distance" + distance_function +"; knn" + knn
     vocabulary = BagOfWords.most_freq_words(normalized_words, vocab_size)
     word_bag = BagOfWords(vocabulary)
 
@@ -231,7 +231,9 @@ def aufgabe3():
     for cat in brown.categories():
         bow_mat[cat] = [WordListNormalizer().normalize_words(brown.words(fileids=doc))[1] for doc in brown.fileids(categories=cat)]
     category_dic = word_bag.category_bow_dict(bow_mat)
-    relative_category_dict = RelativeTermFrequencies.weighting(bow_mat)
+    relative_category_dict = {}
+    for key in category_dic:
+        relative_category_dict[key] = RelativeTermFrequencies.weighting(category_dic[key])
     cross_validator = CrossValidation(relative_category_dict, 5)
 
     first_fold = cross_validator.corpus_fold(0)
