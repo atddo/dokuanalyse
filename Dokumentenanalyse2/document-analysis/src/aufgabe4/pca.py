@@ -24,13 +24,21 @@ class PCAExample(object):
         if target_dim != samples.shape[1]:
             mean_eigwerte_eigvektoren = self.__estimate_subspace(samples)
             durchschnitt = mean_eigwerte_eigvektoren[0]
-            eigenwerte = mean_eigwerte_eigvektoren[1]
-            eigenvektoren = np.transpose(mean_eigwerte_eigvektoren[2])
+            index_eigenwerte = np.argsort(mean_eigwerte_eigvektoren[1])
+            groesste_eigenwerte = index_eigenwerte[len(index_eigenwerte)-target_dim:]
+            eigenvektoren = np.transpose(mean_eigwerte_eigvektoren[2])[groesste_eigenwerte,:]
             
-            neue_koeffizient_mat = samples * eigenvektoren[0] * eigenvektoren[1] * eigenvektoren[2] * eigenwerte
+            print "eigenwerte"
+            print mean_eigwerte_eigvektoren[1]
+            print "index der n-groesssten"
+            print groesste_eigenwerte
+            print "eigenvektoren"
+            print np.transpose(mean_eigwerte_eigvektoren[2])
+            print "eigenvektoren mit groessten eigenwerten"
+            print eigenvektoren
             
+            neue_koeffizient_mat = samples
             
-        
     def __estimate_subspace(self, samples):
         """Statistische Berechnung des Unterraums.
         
