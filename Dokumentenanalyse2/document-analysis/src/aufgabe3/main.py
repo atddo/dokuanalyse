@@ -230,7 +230,11 @@ def aufgabe3():
     for cat in brown.categories():
         bow_mat[cat] = [WordListNormalizer().normalize_words(brown.words(fileids=doc))[1] for doc in brown.fileids(categories=cat)]
     category_dic = word_bag.category_bow_dict(bow_mat)
-    relative_category_dict = RelativeTermFrequencies.weighting(bow_mat)
+    
+    relative_category_dict = {}
+    for key in category_dic:
+        relative_category_dict[key] = RelativeTermFrequencies.weighting(category_dic[key])
+    
     cross_validator = CrossValidation(relative_category_dict, 5)
 
     first_fold = cross_validator.corpus_fold(0)
