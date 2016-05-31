@@ -1,4 +1,5 @@
 import itertools
+import numpy as np
 from corpus import CorpusLoader
 from evaluation import CrossValidation, ClassificationEvaluator
 from features import WordListNormalizer, BagOfWords, RelativeTermFrequencies
@@ -109,6 +110,20 @@ def aufgabe3():
     eval_fourth_fold = ClassificationEvaluator(result_fourth_fold, fourth_fold[3])
     eval_fifth_fold = ClassificationEvaluator(result_fifth_fold, fifth_fold[3])
 
+    list_eval_folds =[]
+    list_eval_folds.append(eval_first_fold.error_rate()[0])
+    list_eval_folds.append(eval_second_fold.error_rate()[0])
+    list_eval_folds.append(eval_third_fold.error_rate()[0])
+    list_eval_folds.append(eval_fourth_fold.error_rate()[0])
+    list_eval_folds.append(eval_fifth_fold.error_rate()[0])
+    np_array_eval_folds = np.array(list_eval_folds)
+    print np_array_eval_folds
+    mittelwert = np.mean(np_array_eval_folds)
+    print "Mittelwert"
+    print mittelwert
+    print "++++++++++++"
+    print "Minimum"
+    print np.min(np_array_eval_folds, axis=0)
 
     #gewichtetes mittel fehlt noch...
 

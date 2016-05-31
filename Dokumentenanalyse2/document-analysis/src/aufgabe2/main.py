@@ -268,6 +268,10 @@ def aufgabe2():
     eval = ClassificationEvaluator(result_knnk, test_labels)
     error_overall = eval.error_rate()[0]
     error_cat_list = eval.category_error_rates()
+    print "Error Overall"
+    print error_overall
+    print "Error Catlist"
+    print error_cat_list
 
 
 if __name__ == '__main__':
