@@ -12,7 +12,7 @@ import numpy as np
 def aufgabe1():
     
     #
-    # In der ersten Aufgabe sollen Sie sich mit dem Brown Corpus 
+    # In der ersten Aufgabe sollen Sie sich mit dem Brown Corpus aaaaaa
     # vertraut machen. 
     #  - Laden Sie den Corpus und schauen Sie sich dessen Aufbau an.
     #  - Analysieren Sie den Corpus in dem Sie Wortstatistiken bestimmen.
