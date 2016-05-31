@@ -22,7 +22,14 @@ class PCAExample(object):
         
         # Implementieren Sie die Dimensionsreduktion
         if target_dim != samples.shape[1]:
-            raise NotImplementedError('Implement me')
+            mean_eigwerte_eigvektoren = self.__estimate_subspace(samples)
+            durchschnitt = mean_eigwerte_eigvektoren[0]
+            eigenwerte = mean_eigwerte_eigvektoren[1]
+            eigenvektoren = np.transpose(mean_eigwerte_eigvektoren[2])
+            
+            neue_koeffizient_mat = samples * eigenvektoren[0] * eigenvektoren[1] * eigenvektoren[2] * eigenwerte
+            
+            
         
     def __estimate_subspace(self, samples):
         """Statistische Berechnung des Unterraums.

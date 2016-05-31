@@ -5,4 +5,8 @@
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/${PROJECT_DIR_NAME}/document-analysis/src</path>
 </pydev_pathproperty>
+<pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
+<path>/local/installed/pyYAML-3.10/lib/python2.7</path>
+<path>/local/installed/nltk-2.0.4/lib/python2.7</path>
+</pydev_pathproperty>
 </pydev_project>
