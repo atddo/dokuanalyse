@@ -30,14 +30,22 @@ class PCAExample(object):
             
             print "eigenwerte"
             print mean_eigwerte_eigvektoren[1]
-            print "index der n-groesssten"
+            print "index der n-groessten"
             print groesste_eigenwerte
             print "eigenvektoren"
             print np.transpose(mean_eigwerte_eigvektoren[2])
             print "eigenvektoren mit groessten eigenwerten"
             print eigenvektoren
             
-            neue_koeffizient_mat = samples
+            print "_________________________________"
+            print samples
+            print "reduced"
+            neue_koeffizienzmatrix = samples
+            print neue_koeffizienzmatrix
+            
+            
+            #die nicht benutzte dimension von samples (siehe groesste eigenwerte für indizes) "wegschneiden".
+            #dann mit eigenvektoren multiplizieren (auf neues koordinatensystem ploten.
             
     def __estimate_subspace(self, samples):
         """Statistische Berechnung des Unterraums.
