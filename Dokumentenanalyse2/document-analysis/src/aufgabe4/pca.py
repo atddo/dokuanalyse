@@ -24,9 +24,7 @@ class PCAExample(object):
         if target_dim != samples.shape[1]:
             
             self.__sub_var = self.__sub_var[:target_dim]
-            self.__sub_vs = self.__sub_vs[:target_dim]
-            
-            sample = np.dot(self.__sub_vs, samples.T).T
+            self.__sub_vs = self.__sub_vs [:,:target_dim]
             
     def __estimate_subspace(self, samples):
         """Statistische Berechnung des Unterraums.
@@ -67,6 +65,10 @@ class PCAExample(object):
             raise ValueError('Samples dimension does not match vector space transformation matrix')
         
         # Ueberlegen Sie, wie man die gesamte samples Matrix in einem transformiert (ohne Schleife)
+        
+        samples_2d = np.dot(self.__sub_vs.T, samples.T).T
+        
+        return samples_2d
 
 
     def plot_subspace(self, limits, color, linewidth, alpha, ellipsoid=True, coord_system=True):

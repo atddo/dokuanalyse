@@ -89,14 +89,15 @@ def aufgabe4():
     # Erklaeren Sie die Vorgehensweise.
     
     zeilen, spalten = samples_2d.shape
-    total_xy = np.sum(samples_2d, axis=0)
     mean_xy = np.mean(samples_2d, axis=0)
 
-    kovarianz_xx = np.sum(np.square(samples_2d[:, 0:0] - mean_xy[:, 0:0], axis=0))/zeilen-1
-    kovarianz_xy = np.sum((samples_2d[:, 0:0] - mean_xy[:, 0:0]) * (samples_2d[:, 1:1] - mean_xy[:, 1:1]), axis=0)/zeilen-1
-    kovarianz_yy = np.sum(np.square(samples_2d[:, 1:1] - mean_xy[:, 1:1], axis=0))/zeilen-1
+#     kovarianz_xx = np.sum(np.square(samples_2d[:, 0:0] - mean_xy[0:0]), axis=0)/zeilen-1
+#     kovarianz_xy = np.sum((samples_2d[:, 0:0] - mean_xy[0:0]) * (samples_2d[:, 1:1] - mean_xy[1:1]), axis=0)/zeilen-1
+#     kovarianz_yy = np.sum(np.square(samples_2d[:, 1:1] - mean_xy[1:1]), axis=0)/zeilen-1
 
-    kovarianz_mat = [[kovarianz_xx, kovarianz_xy], [kovarianz_xy, kovarianz_yy]]
+    samples_2d = samples_2d - mean_xy
+    kovarianz_mat = np.dot(samples_2d, samples_2d.T)/zeilen-1
+    
     print "kovarianz ausgerechnet"
     print kovarianz_mat
 
