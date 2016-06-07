@@ -6,8 +6,8 @@ class ClassificationEvaluatorTest(unittest.TestCase):
 
     def setUp(self):
         unittest.TestCase.setUp(self)
-        self.__estimated_labels = np.array([['A', 'A', 'B', 'A', 'B' ]]).T
-        self.__gt_labels = np.array([['A', 'C', 'B', 'A', 'B' ]]).T
+        self.__estimated_labels = np.array([['Ab', 'Ab', 'Ba', 'Ab', 'Ba' ]]).T
+        self.__gt_labels = np.array([['Ab', 'C', 'Ba', 'Ab', 'Ba' ]]).T
 
     def test_error_rate(self):
         

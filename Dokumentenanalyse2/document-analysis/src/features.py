@@ -186,7 +186,7 @@ class BagOfWords(object):
                     if k in self.__lookupindex:
                         arr[idx, self.__lookupindex[k]] +=1
 
-            category_bow_mat[key] = arr
+            category_bow_mat[key] = self.__term_weighting.weighting(arr)
 
         return category_bow_mat
 
