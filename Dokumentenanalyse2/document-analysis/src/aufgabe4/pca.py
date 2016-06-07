@@ -22,30 +22,11 @@ class PCAExample(object):
         
         # Implementieren Sie die Dimensionsreduktion
         if target_dim != samples.shape[1]:
-            groesste_eigenwerte = self.__sub_var[:target_dim]
-            eigenvektoren = np.transpose(self.__sub_vs)[:target_dim]
-
-            samples_2d = samples[:,:target_dim]
             
-            print "eigenwerte"
-            print self.__sub_var
-            print "index der n-groessten"
-            print groesste_eigenwerte
-            print "eigenvektoren"
-            print np.transpose(self.__sub_vs)
-            print "eigenvektoren mit groessten eigenwerten"
-            print eigenvektoren
-
-            print "_________________________________"
-            print samples_2d
-            print "reduced"
-            samples_2d = np.dot(eigenvektoren.T, samples_2d.T).T   #sample = np.dot(eigenvektoren.T, samples.T).T
-            #samples = samples * eigenvektoren[0] * eigenvektoren[1] * np.array([1,1,0])
-            print samples_2d
+            self.__sub_var = self.__sub_var[:target_dim]
+            self.__sub_vs = self.__sub_vs[:target_dim]
             
-            
-            #die nicht benutzte dimension von samples (siehe groesste eigenwerte fuer indizes) "wegschneiden".
-            #dann mit eigenvektoren multiplizieren (auf neues koordinatensystem ploten.
+            sample = np.dot(self.__sub_vs, samples.T).T
             
     def __estimate_subspace(self, samples):
         """Statistische Berechnung des Unterraums.
@@ -86,8 +67,6 @@ class PCAExample(object):
             raise ValueError('Samples dimension does not match vector space transformation matrix')
         
         # Ueberlegen Sie, wie man die gesamte samples Matrix in einem transformiert (ohne Schleife)
-        
-        raise NotImplementedError('Implement me')
 
 
     def plot_subspace(self, limits, color, linewidth, alpha, ellipsoid=True, coord_system=True):

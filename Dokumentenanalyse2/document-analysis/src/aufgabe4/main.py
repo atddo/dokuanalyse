@@ -53,7 +53,6 @@ def aufgabe4():
     # Vektorraum wird wieder visualisiert.
     pca_example_2d = PCAExample(samples, target_dim=2)
     pca_example_2d.plot_subspace(limits=limits_samples, color='b', linewidth=0.01, alpha=0.3)
-    plt.show()
     
     # Transformieren Sie nun die 3D Beispieldaten in den 2D Unterraum.
     # Implementieren Sie dazu die Methode transform_samples. Die Daten werden
