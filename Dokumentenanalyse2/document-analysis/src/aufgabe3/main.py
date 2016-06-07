@@ -216,7 +216,7 @@ def aufgabe3():
     print "+++++++++++++++++++++++++++++++++++++++++++++++"
     print "Testfunktion"
     
-    vocab_size = 20
+    vocab_size = 2000
     distance_function="cityblock"
     knn=6
     #print "vocabsize:"  + vocab_size +"; distance" + distance_function +"; knn" + knn
@@ -231,11 +231,8 @@ def aufgabe3():
     for key in category_dic:
         relative_category_dict[key] = RelativeTermFrequencies.weighting(category_dic[key])
     cross_validator = CrossValidation(relative_category_dict, 5)
-    
-    print relative_category_dict
 
     classificator = KNNClassifier(knn, distance_function)
-    
     print cross_validator.validate(classificator)
 
 #     first_fold = cross_validator.corpus_fold(0)
