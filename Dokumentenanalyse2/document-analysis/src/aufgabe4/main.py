@@ -53,6 +53,7 @@ def aufgabe4():
     # Vektorraum wird wieder visualisiert.
     pca_example_2d = PCAExample(samples, target_dim=2)
     pca_example_2d.plot_subspace(limits=limits_samples, color='b', linewidth=0.01, alpha=0.3)
+    plt.show()
     
     # Transformieren Sie nun die 3D Beispieldaten in den 2D Unterraum.
     # Implementieren Sie dazu die Methode transform_samples. Die Daten werden
@@ -88,7 +89,21 @@ def aufgabe4():
     # Verwenden Sie bei der Berechnung keine Schleifen, sondern nur Matrixoperationen.
     # Erklaeren Sie die Vorgehensweise.
     
-    raise NotImplementedError('Implement me')
+    zeilen, spalten = samples_2d.shape
+    total_xy = np.sum(samples_2d, axis=0)
+    mean_xy = np.mean(samples_2d, axis=0)
+
+    kovarianz_xx = np.sum(np.square(samples_2d[:, 0:0] - mean_xy[:, 0:0], axis=0))/zeilen-1
+    kovarianz_xy = np.sum((samples_2d[:, 0:0] - mean_xy[:, 0:0]) * (samples_2d[:, 1:1] - mean_xy[:, 1:1]), axis=0)/zeilen-1
+    kovarianz_yy = np.sum(np.square(samples_2d[:, 1:1] - mean_xy[:, 1:1], axis=0))/zeilen-1
+
+    kovarianz_mat = [[kovarianz_xx, kovarianz_xy], [kovarianz_xy, kovarianz_yy]]
+    print "kovarianz ausgerechnet"
+    print kovarianz_mat
+
+    kovarianz_referenz = np.cov(samples_2d)
+    print "kovarianz referenz"
+    print kovarianz_referenz
     
     
     #

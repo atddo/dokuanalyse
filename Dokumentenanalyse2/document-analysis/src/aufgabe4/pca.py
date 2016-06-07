@@ -22,9 +22,10 @@ class PCAExample(object):
         
         # Implementieren Sie die Dimensionsreduktion
         if target_dim != samples.shape[1]:
-            index_eigenwerte = np.argsort(self.__sub_var)
-            groesste_eigenwerte = index_eigenwerte[len(index_eigenwerte)-target_dim:]
-            eigenvektoren = np.transpose(self.__sub_vs)[groesste_eigenwerte,:]
+            groesste_eigenwerte = self.__sub_var[:target_dim]
+            eigenvektoren = np.transpose(self.__sub_vs)[:target_dim]
+
+            samples_2d = samples[:,:target_dim]
             
             print "eigenwerte"
             print self.__sub_var
@@ -34,12 +35,13 @@ class PCAExample(object):
             print np.transpose(self.__sub_vs)
             print "eigenvektoren mit groessten eigenwerten"
             print eigenvektoren
-            
+
             print "_________________________________"
-            print samples
+            print samples_2d
             print "reduced"
-            samples = samples * eigenvektoren[0] * eigenvektoren[1] * np.array([1,1,0])
-            print samples
+            samples_2d = np.dot(eigenvektoren.T, samples_2d.T).T   #sample = np.dot(eigenvektoren.T, samples.T).T
+            #samples = samples * eigenvektoren[0] * eigenvektoren[1] * np.array([1,1,0])
+            print samples_2d
             
             
             #die nicht benutzte dimension von samples (siehe groesste eigenwerte fuer indizes) "wegschneiden".
