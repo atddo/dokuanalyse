@@ -178,7 +178,7 @@ class ClassificationEvaluator(object):
         for category in categories:
             catmask = self.__groundtruth_labels == category
             error_rate_category = self.error_rate(catmask)
-            result_tuple = tuple(category) + error_rate_category
+            result_tuple = (category,) + error_rate_category
             cat_results_list.append(result_tuple)
             
         return cat_results_list

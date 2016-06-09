@@ -305,7 +305,14 @@ class TopicFeatureTransform(object):
 
             mit d Trainingsbeispielen und t dimensionalen Merkmalsvektoren.
         """
-        raise NotImplementedError('Implement me')
+        
+        self.__T, S_arr, D_ = np.linalg.svd(train_data.T, full_matrices=False)
+        S = np.diag(S_arr)
+        self.__S_inv = np.linalg.inv(S)
+
+        if self.__n_topics != self.__T.shape[1]:
+            self.__T = self.__T[:,:self.__n_topics]
+            self.__S_inv = self.__S_inv[:self.__n_topics,:self.__n_topics]
 
     def transform(self, data):
         """Transformiert Daten in den Topic Raum.
@@ -317,5 +324,8 @@ class TopicFeatureTransform(object):
             data_trans: ndarray der in den Topic Raum transformierten Daten
                 (d x n_topics).
         """
-        raise NotImplementedError('Implement me')
+        
+        data_trans = np.dot(np.dot(data, self.__T), self.__S_inv)
+        
+        return data_trans
 

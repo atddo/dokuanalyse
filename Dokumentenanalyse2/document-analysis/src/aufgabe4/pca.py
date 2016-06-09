@@ -66,7 +66,8 @@ class PCAExample(object):
         
         # Ueberlegen Sie, wie man die gesamte samples Matrix in einem transformiert (ohne Schleife)
         
-        samples_2d = np.dot(self.__sub_vs.T, samples.T).T
+        samples_mf = samples - self.__sub_origin
+        samples_2d = np.dot(self.__sub_vs.T, samples_mf.T).T
         
         return samples_2d
 

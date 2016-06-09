@@ -31,7 +31,7 @@ class ClassificationEvaluatorTest(unittest.TestCase):
     def test_category_error_rates(self):
         class_eval = ClassificationEvaluator(self.__estimated_labels, self.__gt_labels)
         result = class_eval.category_error_rates()
-        result_ref = [('A', 0.0, 0, 2), ('B', 0.0, 0, 2), ('C', 100.0, 1, 1)]
+        result_ref = [('Ab', 0.0, 0, 2), ('Ba', 0.0, 0, 2), ('C', 100.0, 1, 1)]
         self.assertEqual(result, result_ref)
 
 

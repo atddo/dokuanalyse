@@ -3,7 +3,7 @@ from aufgabe4.pca import PCAExample
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # IGNORE:unused-import
 import numpy as np
-from features import WordListNormalizer, BagOfWords
+from features import WordListNormalizer, BagOfWords, TopicFeatureTransform
 import itertools
 from corpus import CorpusLoader
 
@@ -89,21 +89,18 @@ def aufgabe4():
     # Erklaeren Sie die Vorgehensweise.
     
     zeilen, spalten = samples_2d.shape
+    print zeilen, spalten
     mean_xy = np.mean(samples_2d, axis=0)
 
-#     kovarianz_xx = np.sum(np.square(samples_2d[:, 0:0] - mean_xy[0:0]), axis=0)/zeilen-1
-#     kovarianz_xy = np.sum((samples_2d[:, 0:0] - mean_xy[0:0]) * (samples_2d[:, 1:1] - mean_xy[1:1]), axis=0)/zeilen-1
-#     kovarianz_yy = np.sum(np.square(samples_2d[:, 1:1] - mean_xy[1:1]), axis=0)/zeilen-1
-
-    samples_2d = samples_2d - mean_xy
-    kovarianz_mat = np.dot(samples_2d, samples_2d.T)/zeilen-1
+    samples_2d_mf = samples_2d - mean_xy
+    kovarianz_mat = np.dot(samples_2d_mf.T, samples_2d_mf)/(zeilen-1)
     
-    print "kovarianz ausgerechnet"
-    print kovarianz_mat
-
-    kovarianz_referenz = np.cov(samples_2d)
-    print "kovarianz referenz"
-    print kovarianz_referenz
+#     print "kovarianz ausgerechnet"
+#     print kovarianz_mat
+#  
+#     kovarianz_referenz = np.cov(samples_2d, rowvar=0)
+#     print "kovarianz referenz"
+#     print kovarianz_referenz
     
     
     #
@@ -187,8 +184,17 @@ def aufgabe4():
                      [0, 0, 5],
                      [5, 5, 0],
                      [0, 5, 5]])
-    raise NotImplementedError('Implement me')
     
+    n_topics = 3
+    top_feature_trans = TopicFeatureTransform(n_topics)
+    top_feature_trans.estimate(bow_train, bow_train)
+    
+    bow_transformed = top_feature_trans.transform(bow_test)
+    
+    PCAExample.plot_sample_data(bow_train, annotations=bow_train)
+    PCAExample.plot_sample_data(bow_transformed, annotations=bow_test)
+    plt.show()
+        
     #
     # Warum lassen sich die Koeffizienten der Termvektoren so schwer interpretieren?
     # 
@@ -205,8 +211,15 @@ def aufgabe4():
     # Funktionen aus dem Beispiel zur Hauptkomponentenanalyse (oben). Schauen Sie sich 
     # auch deren weitere Parameter (und zusaetzlich vorhandene Hilfsfunktionen) an. 
     
-    raise NotImplementedError('Implement me')
+    pca = PCAExample
+    pca.plot_sample_data(D_.T, color='r', annotations=bow_train)
+    T, S_arr, D_ = np.linalg.svd(bow_test.T, full_matrices=False)
+    S = np.diag(S_arr)
+    pca.plot_sample_data(D_.T, color='g', annotations=bow_test)
+    plt.show()
+
     
+        
     #
     # Fuehren Sie nun eine Dimensionsreduktion der Trainings und Testdaten auf zwei 
     # Dimensionen durch und plotten Sie die Topic-Koeffizienten (inkl. Bag-of-Words 
@@ -217,8 +230,9 @@ def aufgabe4():
     # und plotten Sie die Koeffizienten inkl. deren Bag-of-Words Annotationen. 
     #
     
-    raise NotImplementedError('Implement me')
-    
+    n_topics = 2
+    top_feature_trans = TopicFeatureTransform(n_topics)
+    top_feature_trans.estimate(bow_train, bow_train)    
     
     
     
