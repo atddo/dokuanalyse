@@ -3,7 +3,9 @@ from aufgabe4.pca import PCAExample
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # IGNORE:unused-import
 import numpy as np
-from features import WordListNormalizer, BagOfWords, TopicFeatureTransform
+from features import WordListNormalizer, BagOfWords, TopicFeatureTransform, RelativeTermFrequencies
+from evaluation import CrossValidation
+from classification import KNNClassifier
 import itertools
 from corpus import CorpusLoader
 
@@ -71,7 +73,7 @@ def aufgabe4():
     ax = fig.add_subplot(111)
     PCAExample.plot_sample_data(samples_2d, ax=ax)
     PCAExample.set_axis_limits(ax, limits=((-10, 10), (-10, 10)))
-
+ 
     plt.show()
         
     # Berechnen Sie nun die Kovarianzmatrix der transformierten Daten.
@@ -91,16 +93,16 @@ def aufgabe4():
     zeilen, spalten = samples_2d.shape
     print zeilen, spalten
     mean_xy = np.mean(samples_2d, axis=0)
-
+ 
     samples_2d_mf = samples_2d - mean_xy
     kovarianz_mat = np.dot(samples_2d_mf.T, samples_2d_mf)/(zeilen-1)
-    
-#     print "kovarianz ausgerechnet"
-#     print kovarianz_mat
-#  
-#     kovarianz_referenz = np.cov(samples_2d, rowvar=0)
-#     print "kovarianz referenz"
-#     print kovarianz_referenz
+     
+    print "kovarianz ausgerechnet"
+    print kovarianz_mat
+  
+    kovarianz_referenz = np.cov(samples_2d, rowvar=0)
+    print "kovarianz referenz"
+    print kovarianz_referenz
     
     
     #
@@ -188,11 +190,17 @@ def aufgabe4():
     n_topics = 3
     top_feature_trans = TopicFeatureTransform(n_topics)
     top_feature_trans.estimate(bow_train, bow_train)
-    
     bow_transformed = top_feature_trans.transform(bow_test)
-    
-    PCAExample.plot_sample_data(bow_train, annotations=bow_train)
-    PCAExample.plot_sample_data(bow_transformed, annotations=bow_test)
+     
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    PCAExample.plot_sample_data(bow_train, annotations=bow_train, ax=ax)
+    PCAExample.set_axis_limits(ax, limits=((0, 10), (0, 10), (0, 10)))
+     
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    PCAExample.plot_sample_data(bow_transformed, annotations=bow_test, ax=ax)
+    PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1), (-1, 1)))
     plt.show()
         
     #
@@ -211,13 +219,26 @@ def aufgabe4():
     # Funktionen aus dem Beispiel zur Hauptkomponentenanalyse (oben). Schauen Sie sich 
     # auch deren weitere Parameter (und zusaetzlich vorhandene Hilfsfunktionen) an. 
     
-    pca = PCAExample
-    pca.plot_sample_data(D_.T, color='r', annotations=bow_train)
-    T, S_arr, D_ = np.linalg.svd(bow_test.T, full_matrices=False)
-    S = np.diag(S_arr)
-    pca.plot_sample_data(D_.T, color='g', annotations=bow_test)
-    plt.show()
-
+    #Bag of words plots
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    PCAExample.plot_sample_data(bow_train, color='r', annotations=bow_train, ax=ax)
+    fig.hold(True)
+    PCAExample.plot_sample_data(bow_test, color='g', annotations=bow_test, ax=ax)
+    PCAExample.set_axis_limits(ax, limits=((0, 10), (0, 10), (0,10)))
+    fig.hold()
+     
+    #koeffizienten plot
+    T_test, S_arr_test, D_test_ = np.linalg.svd(bow_test.T, full_matrices=False)
+    S_test = np.diag(S_arr_test)
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    PCAExample.plot_sample_data(D_.T, color='r', annotations=bow_train, ax=ax)
+    fig.hold(True)
+    PCAExample.plot_sample_data(D_test_.T, color='g', annotations=bow_test, ax=ax)
+    PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1), (-1,1)))
+    fig.hold()
     
         
     #
@@ -232,9 +253,27 @@ def aufgabe4():
     
     n_topics = 2
     top_feature_trans = TopicFeatureTransform(n_topics)
-    top_feature_trans.estimate(bow_train, bow_train)    
+    top_feature_trans.estimate(bow_train, None)
     
+    S_inv = np.linalg.inv(S)
+    S_inv_test = np.linalg.inv(S_test)
     
+    T = T[:n_topics]
+    S_inv = S_inv[:n_topics,:n_topics]
+    T_test = T_test[:n_topics]
+    S_inv_test = S_inv_test[:n_topics,:n_topics]
+    
+    data_trans = np.dot(np.dot(bow_train, T.T), S_inv)
+    data_trans_test = np.dot(np.dot(bow_test, T_test.T), S_inv_test)
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    PCAExample.plot_sample_data(data_trans, color='r', annotations=bow_train, ax=ax)
+    fig.hold(True)
+    PCAExample.plot_sample_data(data_trans_test, color='g', annotations=bow_test, ax=ax)
+    PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1)))
+    fig.hold()
+    plt.show()
     
     #
     # Integrieren Sie nun die Topic-Raum Modellierung mittels Singulaerwertzerlegung 
@@ -259,7 +298,23 @@ def aufgabe4():
     CorpusLoader.load()
     brown = CorpusLoader.brown_corpus()
     
-    raise NotImplementedError('Implement me')
+    normalized_words = WordListNormalizer().normalize_words(brown.words())[1]
+    
+    vocab_size = 2000
+    distance_function="cityblock"
+    knn=6
+    vocabulary = BagOfWords.most_freq_words(normalized_words, vocab_size)
+    word_bag = BagOfWords(vocabulary, RelativeTermFrequencies())
+
+    bow_mat = {}
+    for cat in brown.categories():
+        bow_mat[cat] = [(brown.words(fileids=doc)) for doc in brown.fileids(categories=cat)]
+    category_dic = word_bag.category_bow_dict(bow_mat)
+
+    cross_validator = CrossValidation(category_dic, 5)
+
+    classificator = KNNClassifier(knn, distance_function)
+    print cross_validator.validate(classificator, TopicFeatureTransform(vocab_size))
     
     
 if __name__ == '__main__':
