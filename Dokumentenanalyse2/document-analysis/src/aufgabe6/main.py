@@ -7,7 +7,7 @@ import Image
 import matplotlib
 # ACHTUNG: Die vlfeat Python Bindungs werden nur fuer Linux unterstuetzt und 
 # muessen nicht unbedingt eingebunden werden --> siehe unten
-import vlfeat
+#import vlfeat
 import cPickle as pickle
 from scipy.cluster.vq import kmeans2
 from scipy.spatial.distance import cdist
@@ -51,13 +51,12 @@ def aufgabe6():
     # her:
     #
     # Bag-of-Words               Bag-of-Features
-    # Wort                  ->   
-    # typische Wortstaemme  ->   
-    # Stemming              ->   
-    # Histogramm            ->   
+    # Wort                  ->   Deskriptor
+    # typische Wortstaemme  ->   Zentroide
+    # Stemming              ->   Quantisierung
+    # Histogramm            ->   Histogramm der Quantisierten Daten
     #
-    #
-    raise NotImplementedError('Implement me')
+
     #
     # Welche Rolle spielt die Anordung der lokalen Bilddeskriptoren im regelmaessigen
     # Grid?
@@ -84,13 +83,15 @@ def aufgabe6():
     # (diskretes Signal) durch spezielle Faltungsoperatoren. Dieses Konzept soll 
     # zunaechst anhand eines eindimensionalen Beipiels verdeutlicht werden. 
     # Falten Sie das Signal 
-    # 0 0 0 1 2 3 4 5 0 0 9 3 0 0
-    # mit der Faltungsmaske 
+    # 0  0  0  1  2  3  4  5  0  0  9  3  0  0
+    #    0  1  2  2  2  2 -4 -5  9  3 -9 -3 
+    #mit der Faltungsmaske 
     # -1 0 1 
     # Wie kann man die Randfaelle behandeln?
+    # auslassen!
     # Diskutieren Sie Eigenschaften und Funktion des Filters (Hochpass).
-    raise NotImplementedError('Implement me')
-    
+    #
+    # Schneidet die tiefen Frequenzen im Bild (Histogramm) ab.
     #
     # Der Operator laesst sich auf zweidimensionale diskrete Signale verallgemeinern.
     # Dabei benoetigt man eine Faltungsmaske fuer horizontale Kanten und eine fuer
@@ -99,14 +100,36 @@ def aufgabe6():
     # [ -1 0 1] und [1 1 1] gebildet werden koennen. Es resultiert der sogenannte
     # Prewitt Operator.
     #
-    raise NotImplementedError('Implement me')
+    a = np.array([[-1,0,1]])
+    b = np.array([1,1,1])
+    v_maske = a.T * b
+    a = np.array([-1,0,1])
+    b = np.array([[1,1,1]])
+    h_maske = b.T * a
+    print "Prewitt - vertikale Maske"
+    print v_maske
+    print
+    print "Prewitt - horizontale Maske"
+    print h_maske
+    print "---------------------------"
     #
     # In der Praxis konstruiert man den Operator haeufig mit dem Tiefpass Filter
     # [1 2 1]
     # Dabei ergibt sich der Sobel Operator. 
     # Bilden Sie beiden Sie beide Faltungsmasken des Sobel Operators. 
     # Diskutieren Sie den Unterschied zwischen Prewitt und Sobel.
-    raise NotImplementedError('Implement me')
+    a = np.array([[-1,0,1]])
+    b = np.array([1,2,1])
+    sobel_v_maske = a.T * b
+    a = np.array([-1,0,1])
+    b = np.array([[1,2,1]])
+    sobel_h_maske = b.T * a
+    print "Sobel - vertikale Maske"
+    print sobel_v_maske
+    print
+    print "Sobel - horizontale Maske"
+    print sobel_h_maske
+    print "---------------------------"
     #
     
     # 
@@ -137,7 +160,15 @@ def aufgabe6():
     # geht auf einen SciPy Bug zurueck und kann ignoriert werden.
     #
     
-    raise NotImplementedError('Implement me')
+    v_grad = scipy.signal.convolve2d(im_arr, sobel_v_maske, boundary='symm', mode='same')
+    h_grad = scipy.signal.convolve2d(im_arr, sobel_h_maske, boundary='symm', mode='same')
+    
+    grad_magnitude = np.sqrt(np.square(h_grad) + np.square(v_grad))
+    plt.imshow(grad_magnitude, cmap='gray')
+    plt.show()
+    print "grad"
+    print grad_magnitude
+    print "---------------------------------"
     
     #
     # Berechnen Sie nun die (approx.) Gradienten Magnituden und Orientierungen.
@@ -168,7 +199,28 @@ def aufgabe6():
     # - Visualisieren Sie das RGB Bild
     #
 
-    raise NotImplementedError('Implement me')
+    max_element = np.amax(grad_magnitude)
+    grad_normalized = grad_magnitude / max_element
+    print "Normalisiert"
+    print grad_normalized
+    print "----------------------------"
+
+    grad_direction = np.arctan2(v_grad, h_grad)
+    grad_direction -= np.min(grad_direction)
+    grad_direction /= np.max(grad_direction)
+
+    zeilen, spalten = grad_direction.shape
+    ones = np.ones((zeilen,spalten,3), dtype=float)
+    
+    ones[:,:,0] = grad_direction
+    
+    rgb_directions = matplotlib.colors.hsv_to_rgb(ones)
+    
+    plt.imshow(rgb_directions, cmap='rgb')
+    plt.show()
+    print "rgb_directions"
+    print rgb_directions
+    print "---------------------------------"
     
     #
     # Erstellen Sie abschliessend eine gemeinsame Visulisierung der Magnituden 
@@ -182,7 +234,13 @@ def aufgabe6():
     # Bildpunkt sichtbar gemacht werden.
     #
     
-    raise NotImplementedError('Implement me')
+    ones[:,:,2] = grad_normalized
+    rgb_mag_and_dir = matplotlib.colors.hsv_to_rgb(ones)
+    plt.imshow(rgb_mag_and_dir, cmap='rgb')
+    plt.show()
+    print "rgb_mag_and_dir"
+    print rgb_mag_and_dir
+    print "---------------------------------"
     
     
     #
@@ -223,9 +281,9 @@ def aufgabe6():
  
     step_size = 15 
     cell_size = 3
-    frames, desc = vlfeat.vl_dsift(im_arr, step=step_size, size=cell_size)
-#     pickle_densesift_fn = '2700270-small_dense-%d_sift-%d_descriptors.p' % (step_size, cell_size)
-#     frames, desc = pickle.load(open(pickle_densesift_fn, 'rb'))
+#     frames, desc = vlfeat.vl_dsift(im_arr, step=step_size, size=cell_size)
+    pickle_densesift_fn = '2700270-small_dense-%d_sift-%d_descriptors.p' % (step_size, cell_size)
+    frames, desc = pickle.load(open(pickle_densesift_fn, 'rb'))
     frames = frames.T
     desc = desc.T
 
@@ -306,7 +364,7 @@ def aufgabe6():
     # Eingabedaten vorkommen.
     # http://docs.scipy.org/doc/numpy/reference/generated/numpy.bincount.html
     
-    raise NotImplementedError('Implement me')
+    np.
     
     #
     # Plotten Sie die Bag-of-Features Repraesentation nun.
