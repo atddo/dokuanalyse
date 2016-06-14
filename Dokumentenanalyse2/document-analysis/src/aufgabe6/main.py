@@ -364,7 +364,7 @@ def aufgabe6():
     # Eingabedaten vorkommen.
     # http://docs.scipy.org/doc/numpy/reference/generated/numpy.bincount.html
     
-    np.
+    count = np.bincount(labels, minlength=len(labels))
     
     #
     # Plotten Sie die Bag-of-Features Repraesentation nun.
