@@ -191,11 +191,12 @@ def aufgabe4():
     top_feature_trans = TopicFeatureTransform(n_topics)
     top_feature_trans.estimate(bow_train, bow_train)
     bow_transformed = top_feature_trans.transform(bow_test)
+    bow_train_transformed = top_feature_trans.transform(bow_train)
      
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    PCAExample.plot_sample_data(bow_train, annotations=bow_train, ax=ax)
-    PCAExample.set_axis_limits(ax, limits=((0, 10), (0, 10), (0, 10)))
+    PCAExample.plot_sample_data(bow_train_transformed, annotations=bow_train, ax=ax)
+    PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1), (-1, 1)))
      
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -219,26 +220,32 @@ def aufgabe4():
     # Funktionen aus dem Beispiel zur Hauptkomponentenanalyse (oben). Schauen Sie sich 
     # auch deren weitere Parameter (und zusaetzlich vorhandene Hilfsfunktionen) an. 
     
-    #Bag of words plots
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    PCAExample.plot_sample_data(bow_train, color='r', annotations=bow_train, ax=ax)
-    fig.hold(True)
-    PCAExample.plot_sample_data(bow_test, color='g', annotations=bow_test, ax=ax)
-    PCAExample.set_axis_limits(ax, limits=((0, 10), (0, 10), (0,10)))
-    fig.hold()
-     
-    #koeffizienten plot
-    T_test, S_arr_test, D_test_ = np.linalg.svd(bow_test.T, full_matrices=False)
-    S_test = np.diag(S_arr_test)
-    
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    PCAExample.plot_sample_data(D_.T, color='r', annotations=bow_train, ax=ax)
-    fig.hold(True)
-    PCAExample.plot_sample_data(D_test_.T, color='g', annotations=bow_test, ax=ax)
-    PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1), (-1,1)))
-    fig.hold()
+#     #Bag of words plots
+#     fig = plt.figure()
+#     ax = fig.add_subplot(111, projection='3d')
+#     PCAExample.plot_sample_data(bow_train, color='r', annotations=bow_train, ax=ax)
+#     fig.hold(True)
+#     PCAExample.plot_sample_data(bow_test, color='g', annotations=bow_test, ax=ax)
+#     PCAExample.set_axis_limits(ax, limits=((0, 10), (0, 10), (0,10)))
+#     fig.hold()
+#     
+#     
+#     #koeffizienten plot
+# #     T_test, S_arr_test, D_test_ = np.linalg.svd(bow_test.T, full_matrices=False)
+# #     S_test = np.diag(S_arr_test)
+#     
+#     n_topics = 3
+#     top_feature_trans = TopicFeatureTransform(n_topics)
+#     top_feature_trans.estimate(bow_train, None)
+#     test_daten = top_feature_trans.transform(bow_test)
+#     train_daten = top_feature_trans.transform(bow_train)
+#     fig = plt.figure()
+#     ax = fig.add_subplot(111, projection='3d')
+#     PCAExample.plot_sample_data(D_.T, color='r', annotations=bow_train, ax=ax)
+#     fig.hold(True)
+#     PCAExample.plot_sample_data(D_test_.T, color='g', annotations=bow_test, ax=ax)
+#     PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1), (-1,1)))
+#     fig.hold()
     
         
     #
@@ -253,28 +260,42 @@ def aufgabe4():
     
     n_topics = 2
     top_feature_trans = TopicFeatureTransform(n_topics)
-    top_feature_trans.estimate(bow_train, None)
-    
-    S_inv = np.linalg.inv(S)
-    S_inv_test = np.linalg.inv(S_test)
-    
-    T = T[:n_topics]
-    S_inv = S_inv[:n_topics,:n_topics]
-    T_test = T_test[:n_topics]
-    S_inv_test = S_inv_test[:n_topics,:n_topics]
-    
-    data_trans = np.dot(np.dot(bow_train, T.T), S_inv)
-    data_trans_test = np.dot(np.dot(bow_test, T_test.T), S_inv_test)
-    
+    top_feature_trans.estimate(bow_train, bow_train)
+    bow_transformed = top_feature_trans.transform(bow_test)
+    bow_train_transformed = top_feature_trans.transform(bow_train)
+     
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    PCAExample.plot_sample_data(data_trans, color='r', annotations=bow_train, ax=ax)
-    fig.hold(True)
-    PCAExample.plot_sample_data(data_trans_test, color='g', annotations=bow_test, ax=ax)
+    PCAExample.plot_sample_data(bow_train_transformed, annotations=bow_train, ax=ax)
     PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1)))
-    fig.hold()
+     
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    PCAExample.plot_sample_data(bow_transformed, annotations=bow_test, ax=ax)
+    PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1)))
     plt.show()
     
+#     S_inv = np.linalg.inv(S)
+#     S_inv_test = np.linalg.inv(S_test)
+#     
+#     T = T[:n_topics]
+#     S_inv = S_inv[:n_topics,:n_topics]
+#     T_test = T_test[:n_topics]
+#     S_inv_test = S_inv_test[:n_topics,:n_topics]
+#     
+#     data_trans = np.dot(np.dot(bow_train, T.T), S_inv)
+#     data_trans_test = np.dot(np.dot(bow_test, T_test.T), S_inv_test)
+#     
+    
+#     fig = plt.figure()
+#     ax = fig.add_subplot(111)
+#     PCAExample.plot_sample_data(data_trans, color='r', annotations=bow_train, ax=ax)
+#     fig.hold(True)
+#     PCAExample.plot_sample_data(data_trans_test, color='g', annotations=bow_test, ax=ax)
+#     PCAExample.set_axis_limits(ax, limits=((-1, 1), (-1, 1)))
+#     fig.hold()
+#     plt.show()
+#     
     #
     # Integrieren Sie nun die Topic-Raum Modellierung mittels Singulaerwertzerlegung 
     # in die Kreuzvalidierung auf dem Brown Corpus. Berechnen Sie dabei fuer
@@ -301,20 +322,20 @@ def aufgabe4():
     normalized_words = WordListNormalizer().normalize_words(brown.words())[1]
     
     vocab_size = 2000
-    distance_function="cityblock"
+    distance_function="cosine"
     knn=6
     vocabulary = BagOfWords.most_freq_words(normalized_words, vocab_size)
-    word_bag = BagOfWords(vocabulary, RelativeTermFrequencies())
+    word_bag = BagOfWords(vocabulary)
 
     bow_mat = {}
     for cat in brown.categories():
-        bow_mat[cat] = [(brown.words(fileids=doc)) for doc in brown.fileids(categories=cat)]
+        bow_mat[cat] = [WordListNormalizer().normalize_words(brown.words(fileids=doc))[1] for doc in brown.fileids(categories=cat)]
     category_dic = word_bag.category_bow_dict(bow_mat)
 
     cross_validator = CrossValidation(category_dic, 5)
 
     classificator = KNNClassifier(knn, distance_function)
-    print cross_validator.validate(classificator, TopicFeatureTransform(vocab_size))
+    print cross_validator.validate(classificator, TopicFeatureTransform(20))
     
     
 if __name__ == '__main__':
