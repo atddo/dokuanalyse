@@ -14,6 +14,8 @@ from scipy.spatial.distance import cdist
 from matplotlib.patches import Circle, Rectangle
 from matplotlib.lines import Line2D
 
+from visualization import bar_plot
+
 def aufgabe6():
 
     #
@@ -61,7 +63,7 @@ def aufgabe6():
     # Welche Rolle spielt die Anordung der lokalen Bilddeskriptoren im regelmaessigen
     # Grid?
     #
-    
+
 
 
     #
@@ -85,7 +87,7 @@ def aufgabe6():
     # Falten Sie das Signal 
     # 0  0  0  1  2  3  4  5  0  0  9  3  0  0
     #    0  1  2  2  2  2 -4 -5  9  3 -9 -3 
-    #mit der Faltungsmaske 
+    #mit der Faltungsmaske visualizastion
     # -1 0 1 
     # Wie kann man die Randfaelle behandeln?
     # auslassen!
@@ -106,12 +108,7 @@ def aufgabe6():
     a = np.array([-1,0,1])
     b = np.array([[1,1,1]])
     h_maske = b.T * a
-    print "Prewitt - vertikale Maske"
-    print v_maske
-    print
-    print "Prewitt - horizontale Maske"
-    print h_maske
-    print "---------------------------"
+
     #
     # In der Praxis konstruiert man den Operator haeufig mit dem Tiefpass Filter
     # [1 2 1]
@@ -124,13 +121,7 @@ def aufgabe6():
     a = np.array([-1,0,1])
     b = np.array([[1,2,1]])
     sobel_h_maske = b.T * a
-    print "Sobel - vertikale Maske"
-    print sobel_v_maske
-    print
-    print "Sobel - horizontale Maske"
-    print sobel_h_maske
-    print "---------------------------"
-    #
+
     
     # 
     # An folgendem Dokumentenabbild sollen der Sobel-Operator, lokale Bilddeskriptoren
@@ -138,7 +129,7 @@ def aufgabe6():
     # zur Verfuegung. 2700270_small.png ist fuer eine performantere Ausfuehrung geeignet.
     # 2700270.png ist wesentlich hochaufloesender, so dass bestimmte Details besser
     # sichtbar werden. Bedenken Sie, dass bei der Verwendung von 2700270.png unter
-    # Umstaenden die Deskriptorparameter (siehe unten) angepasst werden muessen.
+    # Umstaenden die Deskriptorparameter (siehvisualizastione unten) angepasst werden muessen.
     #
     document_image_filename = '2700270_small.png'
     image = Image.open(document_image_filename)
@@ -166,9 +157,6 @@ def aufgabe6():
     grad_magnitude = np.sqrt(np.square(h_grad) + np.square(v_grad))
     plt.imshow(grad_magnitude, cmap='gray')
     plt.show()
-    print "grad"
-    print grad_magnitude
-    print "---------------------------------"
     
     #
     # Berechnen Sie nun die (approx.) Gradienten Magnituden und Orientierungen.
@@ -201,9 +189,7 @@ def aufgabe6():
 
     max_element = np.amax(grad_magnitude)
     grad_normalized = grad_magnitude / max_element
-    print "Normalisiert"
-    print grad_normalized
-    print "----------------------------"
+
 
     grad_direction = np.arctan2(v_grad, h_grad)
     grad_direction -= np.min(grad_direction)
@@ -218,9 +204,7 @@ def aufgabe6():
     
     plt.imshow(rgb_directions, cmap='rgb')
     plt.show()
-    print "rgb_directions"
-    print rgb_directions
-    print "---------------------------------"
+
     
     #
     # Erstellen Sie abschliessend eine gemeinsame Visulisierung der Magnituden 
@@ -238,9 +222,6 @@ def aufgabe6():
     rgb_mag_and_dir = matplotlib.colors.hsv_to_rgb(ones)
     plt.imshow(rgb_mag_and_dir, cmap='rgb')
     plt.show()
-    print "rgb_mag_and_dir"
-    print rgb_mag_and_dir
-    print "---------------------------------"
     
     
     #
@@ -259,7 +240,7 @@ def aufgabe6():
     # Im folgenden Quellcodeabschnitt werden auf dem Dokumentenbild SIFT Deskriptoren
     # in einem regelmaessigen Grid berechnet. Als Parameter werden dabei die 
     # - Aufloesung des Grids (step)
-    # - die Deskriptorgroesse eingestellt (size). Die Groesse bezieht sich auf eine Zelle
+    # - die Deskriptorgroesse eingestelvisualizastionlt (size). Die Groesse bezieht sich auf eine Zelle
     #   des Deskriptors. Die Seitenlaenge eines gesamten Deskriptors ergibt sich also
     #   aus cell_size * 4
     # Die Rueckgabe besteht aus den Frames und den Deskriptoren. Die Frames enthalten
@@ -364,7 +345,7 @@ def aufgabe6():
     # Eingabedaten vorkommen.
     # http://docs.scipy.org/doc/numpy/reference/generated/numpy.bincount.html
     
-    count = np.bincount(labels, minlength=len(labels))
+    count = np.bincount(labels)
     
     #
     # Plotten Sie die Bag-of-Features Repraesentation nun.
@@ -375,8 +356,10 @@ def aufgabe6():
     # sich auf die einzelnen Balken beziehen. Uebergeben Sie diesen Objekten den
     # Farbwert indem Sie 'set_color(color)' aufrufen. 
     #
-    raise NotImplementedError('Implement me')
-    
+    print "count"
+    print count
+    print "label"
+    print labels
     
     #
     # Llody's Algorithmus zum Clustern von Daten
