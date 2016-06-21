@@ -409,7 +409,28 @@ def aufgabe6():
     #
     # Welche Codebuchgroesse ist fuer die gegebene Verteilung von Daten geeignet?
     
-    raise NotImplementedError('Implement me')
+    n_codes = 5
+    codebuch = samples[0:n_codes]
+    schwellwert = 0.1
+    iter = 0
+    
+    abstaende = cdist(samples, codebuch, 'euclidean')
+    zugehoerigkeit = np.argmin(abstaende, axis=1)
+    abstand_nach_code = abstaende[range(2000),zugehoerigkeit]
+    fehler = np.mean(abstand_nach_code, axis=0)
+    print abstand_nach_code.shape
+    
+    while fehler > schwellwert:
+        iter += 1
+        zugehoerigkeit = np.argmin(abstaende, axis=1)
+ 
+        #neue fehlerberechnung
+        abstaende = cdist(samples, codebuch, 'euclidean')
+        zugehoerigkeit = np.argmin(abstaende, axis=1)
+        abstand_nach_code = abstaende[range(2000),zugehoerigkeit]
+        fehler = np.mean(abstand_nach_code, axis=0)
+    
+    print "fertig"
     
     #
     # Plotten Sie nun das Ergebnis der Clusteranalyse. Faerben Sie dazu die
