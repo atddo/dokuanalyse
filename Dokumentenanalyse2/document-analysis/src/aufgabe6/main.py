@@ -356,10 +356,16 @@ def aufgabe6():
     # sich auf die einzelnen Balken beziehen. Uebergeben Sie diesen Objekten den
     # Farbwert indem Sie 'set_color(color)' aufrufen. 
     #
-    print "count"
-    print count
-    print "label"
-    print labels
+    
+    x = count.size
+    
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    barlist = ax.bar(np.arange(0, x), count)
+    for index, bar in enumerate(barlist):
+        color = colormap(index / float(n_centroids))
+        bar.set_color(color)
+    plt.show()
     
     #
     # Llody's Algorithmus zum Clustern von Daten
